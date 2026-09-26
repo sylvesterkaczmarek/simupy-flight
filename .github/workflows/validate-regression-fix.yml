@@ -1,0 +1,40 @@
+name: Validate regression fix
+on:
+  push:
+    branches: [validation/daveml-strict-less-than-20260926]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11"]
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: bc4c161cb52b6bef873afbdc44502fcd33e98788
+          path: work
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install validation dependencies
+        run: |
+          python -m pip install -e 'work[test,daveml]' pytest pytest-cov flake8 build setuptools wheel
+      - name: Verify exact source and original failures
+        run: python validation/verify.py work evidence
+      - name: Preserve validation evidence
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: validation-${{ matrix.python }}
+          path: evidence/

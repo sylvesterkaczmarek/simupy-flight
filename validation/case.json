@@ -1,0 +1,12 @@
+{
+  "base": "70754e6916afc206e8c0abb386d1a9c98bf8f561",
+  "branch": "fix/daveml-strict-less-than-20260926",
+  "production": "simupy_flight/parse_daveml.py",
+  "test": "tests/test_daveml_relations.py",
+  "total": 45,
+  "failures": 6,
+  "title": "Preserve strict less-than comparisons in DaveML translation",
+  "source": "bc4c161cb52b6bef873afbdc44502fcd33e98788",
+  "repo": "simupy-flight",
+  "module": "simupy_flight"
+}
